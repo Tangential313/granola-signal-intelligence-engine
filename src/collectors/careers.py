@@ -7,7 +7,9 @@ import requests
 from bs4 import BeautifulSoup
 
 URL = "https://www.granola.ai/jobs"
-OUTPUT_PATH = Path("data/raw/granola_jobs.json")
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+OUTPUT_PATH = BASE_DIR / "data" / "raw" / "granola_jobs.json"
 
 headers = {
     "User-Agent": "Mozilla/5.0"
@@ -32,16 +34,18 @@ for link in links:
     href = link.get("href")
 
     if href and href.startswith("/jobs/"):
-        if href not in seen:
-            seen.add(href)
+        job_parts = link.find_all("p")
 
-            job_parts = link.find_all("p")
+        if len(job_parts) < 2:
+            continue
 
-            if len(job_parts) < 2:
-                continue
+        title = job_parts[0].get_text(strip=True)
+        location = job_parts[1].get_text(strip=True)
 
-            title = job_parts[0].get_text(strip=True)
-            location = job_parts[1].get_text(strip=True)
+        dedupe_key = (href, title, location)
+
+        if dedupe_key not in seen:
+            seen.add(dedupe_key)
 
             job = {
                 "company": "Granola",
@@ -58,3 +62,6 @@ OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 with OUTPUT_PATH.open("w") as file:
     json.dump(jobs, file, indent=2)
+
+print(f"Collected {len(jobs)} jobs")
+print(f"Saved to {OUTPUT_PATH}")

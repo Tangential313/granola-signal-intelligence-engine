@@ -1,0 +1,72 @@
+[
+  {
+    "company": "Granola",
+    "signal_type": "gtm_hiring",
+    "source_url": "https://www.granola.ai/jobs/revenue-operations-lead-us",
+    "source_type": "company_careers",
+    "observed_at": "2026-09-08T14:06:31.887932+00:00",
+    "published_at": null,
+    "evidence_text": "Granola is recruiting Revenue Operations Lead - US in San Francisco Office.",
+    "entity": "Granola"
+  },
+  {
+    "company": "Granola",
+    "signal_type": "gtm_hiring",
+    "source_url": "https://www.granola.ai/jobs/sales-development-representative",
+    "source_type": "company_careers",
+    "observed_at": "2026-09-08T14:06:31.887932+00:00",
+    "published_at": null,
+    "evidence_text": "Granola is recruiting Sales Development Representative in London.",
+    "entity": "Granola"
+  },
+  {
+    "company": "Granola",
+    "signal_type": "gtm_hiring",
+    "source_url": "https://www.granola.ai/jobs/sales-development-representative",
+    "source_type": "company_careers",
+    "observed_at": "2026-09-08T14:06:31.887932+00:00",
+    "published_at": null,
+    "evidence_text": "Granola is recruiting Sales Development Representative in San Francisco Office.",
+    "entity": "Granola"
+  },
+  {
+    "company": "Granola",
+    "signal_type": "gtm_hiring",
+    "source_url": "https://www.granola.ai/jobs/customer-success-manager",
+    "source_type": "company_careers",
+    "observed_at": "2026-09-08T14:06:31.887932+00:00",
+    "published_at": null,
+    "evidence_text": "Granola is recruiting Customer Success Manager in San Francisco Office.",
+    "entity": "Granola"
+  },
+  {
+    "company": "Granola",
+    "signal_type": "gtm_hiring",
+    "source_url": "https://www.granola.ai/jobs/account-executive-high-velocity",
+    "source_type": "company_careers",
+    "observed_at": "2026-09-08T14:06:31.887932+00:00",
+    "published_at": null,
+    "evidence_text": "Granola is recruiting Account Executive, High Velocity in San Francisco Office.",
+    "entity": "Granola"
+  },
+  {
+    "company": "Granola",
+    "signal_type": "gtm_hiring",
+    "source_url": "https://www.granola.ai/jobs/account-executive-enterprise",
+    "source_type": "company_careers",
+    "observed_at": "2026-09-08T14:06:31.887932+00:00",
+    "published_at": null,
+    "evidence_text": "Granola is recruiting Account Executive, Enterprise in San Francisco Office.",
+    "entity": "Granola"
+  },
+  {
+    "company": "Granola",
+    "signal_type": "gtm_hiring",
+    "source_url": "https://www.granola.ai/jobs/account-executive-mid-market",
+    "source_type": "company_careers",
+    "observed_at": "2026-09-08T14:06:31.887932+00:00",
+    "published_at": null,
+    "evidence_text": "Granola is recruiting Account Executive, Mid Market in San Francisco Office.",
+    "entity": "Granola"
+  }
+]
