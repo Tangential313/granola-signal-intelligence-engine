@@ -1,0 +1,13 @@
+{
+  "company": "Granola",
+  "cluster_type": "full_funnel_gtm_buildout",
+  "cluster_strength": "strong",
+  "hypothesis": "Granola appears to be deliberately building a more mature, segmented GTM organisation across pipeline generation, revenue conversion, customer success, and commercial infrastructure.",
+  "hypothesis_confidence": 0.9,
+  "supporting_evidence": {
+    "commercial_infrastructure": 1,
+    "pipeline_generation": 2,
+    "customer_success": 1,
+    "revenue_conversion": 3
+  }
+}

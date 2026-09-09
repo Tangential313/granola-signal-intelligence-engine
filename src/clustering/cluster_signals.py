@@ -11,6 +11,13 @@ INPUT_PATH = (
     / "processed"
     / "granola_validated_signals.json"
 )
+OUTPUT_PATH = (
+    BASE_DIR
+    / "data"
+    / "processed"
+    / "granola_cluster.json"
+)
+
 
 def get_capability(signal):
     evidence = signal["evidence_text"].lower()
@@ -61,12 +68,21 @@ elif capability_breadth >= 3 and evidence_count >= 4:
 else:
     cluster_strength = "weak"
 
+
+
+cluster = {
+    "company": "Granola",
+    "cluster_type": cluster_type,
+    "cluster_strength": cluster_strength,
+    "capability_counts": dict(capability_counts),
+    "evidence_count": evidence_count,
+}
+
+with OUTPUT_PATH.open("w") as file:
+    json.dump(cluster, file, indent=2)
+
 print(f"Cluster strength: {cluster_strength}")
-
-
-
 print(f"Cluster type: {cluster_type}") 
-
+print(f"Saved cluster to {OUTPUT_PATH}")
 print(capability_counts)
-
 print(capabilities)

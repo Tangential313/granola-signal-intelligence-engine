@@ -1,0 +1,12 @@
+{
+  "company": "Granola",
+  "cluster_type": "full_funnel_gtm_buildout",
+  "cluster_strength": "strong",
+  "capability_counts": {
+    "commercial_infrastructure": 1,
+    "pipeline_generation": 2,
+    "customer_success": 1,
+    "revenue_conversion": 3
+  },
+  "evidence_count": 7
+}
