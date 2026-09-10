@@ -11,7 +11,7 @@ OUTPUT_PATH = BASE_DIR / "data" / "processed" / "granola_validated_signals.json"
 with INPUT_PATH.open() as file:
     signals = json.load(file)
 
-print(f"Loaded {len(signals)} normalized signals")
+
 import json
 from pathlib import Path
 

@@ -176,22 +176,7 @@ def validate_signal(signal, seen_signals):
             "reason": None
 }
 
-#Input company values 
-test_signal = {
-    "company": "Granola",
-    "signal_type": "gtm_hiring",
-    "source_url": "https://www.granola.ai/jobs",
-    "source_type": "company_careers",
-    "observed_at": "2026-09-01T12:00:18+00:00",
-    "evidence_text": "Granola is recruiting a Revenue Operations Lead in San Francisco.",
-    "entity": "Granola"
-}
 
 seen_signals = set()
 
-print(validate_signal(test_signal, seen_signals))
-print(validate_signal(test_signal, seen_signals))
-print(get_source_confidence(test_signal))
-print(get_recency_score(test_signal))
-print(get_signal_score(test_signal))
-print(get_gtm_relevance(test_signal))
+
