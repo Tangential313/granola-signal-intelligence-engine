@@ -1,6 +1,8 @@
 
 import json
 from pathlib import Path
+import hashlib
+
 
 def is_gtm_role(job):
     title = job["title"].lower()
@@ -14,8 +16,21 @@ def is_gtm_role(job):
 
     return any(keyword in title for keyword in gtm_keywords)
 
+def make_signal_id(job):
+    identity = (
+        f'{job["company"]}|'
+        f'{job["title"]}|'
+        f'{job["location"]}|'
+        f'{job["url"]}'
+    )
+
+    digest = hashlib.sha256(identity.encode()).hexdigest()[:12]
+
+    return f"sig_{digest}"
+
 def normalize_job(job):
     return {
+        "signal_id": make_signal_id(job),
         "company": job["company"],
         "signal_type": "gtm_hiring",
         "source_url": job["url"],

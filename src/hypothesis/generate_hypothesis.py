@@ -49,6 +49,7 @@ hypothesis_record = {
     "hypothesis": hypothesis,
     "hypothesis_confidence": 0.9 if cluster_strength == "strong" else 0.6,
     "supporting_evidence": cluster["capability_counts"],
+    "supporting_signal_ids": cluster["supporting_signal_ids"],
 }
 
 with OUTPUT_PATH.open("w") as file:

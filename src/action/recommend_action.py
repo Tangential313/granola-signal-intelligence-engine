@@ -48,7 +48,9 @@ action_record = {
     "hypothesis": hypothesis_record["hypothesis"],
     "hypothesis_confidence": hypothesis_record["hypothesis_confidence"],
     "recommended_crm_action": recommended_action,
+    "supporting_signal_ids": hypothesis_record["supporting_signal_ids"],
 }
+
 
 
 with OUTPUT_PATH.open("w") as file:

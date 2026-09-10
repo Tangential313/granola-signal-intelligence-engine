@@ -9,5 +9,14 @@
     "pipeline_generation": 2,
     "customer_success": 1,
     "revenue_conversion": 3
-  }
+  },
+  "supporting_signal_ids": [
+    "sig_f076e552c96c",
+    "sig_4d39ae397a95",
+    "sig_e7f710832ec3",
+    "sig_d45fe477689b",
+    "sig_5e38d29a6efe",
+    "sig_6be8f8e78889",
+    "sig_79072b732217"
+  ]
 }

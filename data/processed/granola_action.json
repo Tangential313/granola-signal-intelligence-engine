@@ -2,5 +2,14 @@
   "company": "Granola",
   "hypothesis": "Granola appears to be deliberately building a more mature, segmented GTM organisation across pipeline generation, revenue conversion, customer success, and commercial infrastructure.",
   "hypothesis_confidence": 0.9,
-  "recommended_crm_action": "Prioritize this account for strategic outreach focused on GTM infrastructure, segmentation, routing, forecasting, and cross-functional revenue operations."
+  "recommended_crm_action": "Prioritize this account for strategic outreach focused on GTM infrastructure, segmentation, routing, forecasting, and cross-functional revenue operations.",
+  "supporting_signal_ids": [
+    "sig_f076e552c96c",
+    "sig_4d39ae397a95",
+    "sig_e7f710832ec3",
+    "sig_d45fe477689b",
+    "sig_5e38d29a6efe",
+    "sig_6be8f8e78889",
+    "sig_79072b732217"
+  ]
 }

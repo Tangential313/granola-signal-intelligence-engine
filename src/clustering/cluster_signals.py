@@ -68,7 +68,10 @@ elif capability_breadth >= 3 and evidence_count >= 4:
 else:
     cluster_strength = "weak"
 
-
+supporting_signal_ids = [
+    signal["signal_id"]
+    for signal in signals
+]
 
 cluster = {
     "company": "Granola",
@@ -76,6 +79,7 @@ cluster = {
     "cluster_strength": cluster_strength,
     "capability_counts": dict(capability_counts),
     "evidence_count": evidence_count,
+    "supporting_signal_ids": supporting_signal_ids,
 }
 
 with OUTPUT_PATH.open("w") as file:
