@@ -37,6 +37,8 @@ def normalize_job(job):
         "source_type": "company_careers",
         "observed_at": job["observed_at"],
         "published_at": None,
+        "role_title": job["title"],
+        "location": job["location"],
         "evidence_text": (
             f'{job["company"]} is recruiting '
             f'{job["title"]} in {job["location"]}.'

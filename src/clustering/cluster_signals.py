@@ -20,18 +20,18 @@ OUTPUT_PATH = (
 
 
 def get_capability(signal):
-    evidence = signal["evidence_text"].lower()
+    role = signal["role_title"].lower()
 
-    if "sales development representative" in evidence:
+    if "sales development representative" in role:
         return "pipeline_generation"
 
-    if "account executive" in evidence:
+    if "account executive" in role:
         return "revenue_conversion"
 
-    if "customer success manager" in evidence:
+    if "customer success" in role:
         return "customer_success"
 
-    if "revenue operations" in evidence:
+    if "revenue operations" in role:
         return "commercial_infrastructure"
 
     return "other"
@@ -58,7 +58,9 @@ if required_capabilities.issubset(capability_counts.keys()):
 else:
     cluster_type = "partial_gtm_buildout"
 
-capability_breadth = len(capability_counts)
+capability_breadth = len(
+    required_capabilities.intersection(capability_counts.keys())
+)
 evidence_count = sum(capability_counts.values())
 
 if capability_breadth == 4 and evidence_count >= 7:
@@ -73,8 +75,15 @@ supporting_signal_ids = [
     for signal in signals
 ]
 
+companies = {signal["company"] for signal in signals}
+
+if len(companies) != 1:
+    raise ValueError("Expected signals from exactly one company")
+
+company = companies.pop()
+
 cluster = {
-    "company": "Granola",
+  "company": company,
     "cluster_type": cluster_type,
     "cluster_strength": cluster_strength,
     "capability_counts": dict(capability_counts),
