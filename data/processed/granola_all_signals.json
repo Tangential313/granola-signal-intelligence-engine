@@ -10,10 +10,7 @@
     "role_title": "Revenue Operations Lead - US",
     "location": "San Francisco Office",
     "evidence_text": "Granola is recruiting Revenue Operations Lead - US in San Francisco Office.",
-    "entity": "Granola",
-    "validation_status": "validated",
-    "validation_reason": null,
-    "signal_score": 0.95
+    "entity": "Granola"
   },
   {
     "signal_id": "sig_4d39ae397a95",
@@ -26,10 +23,7 @@
     "role_title": "Sales Development Representative",
     "location": "London",
     "evidence_text": "Granola is recruiting Sales Development Representative in London.",
-    "entity": "Granola",
-    "validation_status": "validated",
-    "validation_reason": null,
-    "signal_score": 0.95
+    "entity": "Granola"
   },
   {
     "signal_id": "sig_e7f710832ec3",
@@ -42,10 +36,7 @@
     "role_title": "Sales Development Representative",
     "location": "San Francisco Office",
     "evidence_text": "Granola is recruiting Sales Development Representative in San Francisco Office.",
-    "entity": "Granola",
-    "validation_status": "validated",
-    "validation_reason": null,
-    "signal_score": 0.95
+    "entity": "Granola"
   },
   {
     "signal_id": "sig_d45fe477689b",
@@ -58,10 +49,7 @@
     "role_title": "Customer Success Manager",
     "location": "San Francisco Office",
     "evidence_text": "Granola is recruiting Customer Success Manager in San Francisco Office.",
-    "entity": "Granola",
-    "validation_status": "validated",
-    "validation_reason": null,
-    "signal_score": 0.95
+    "entity": "Granola"
   },
   {
     "signal_id": "sig_5e38d29a6efe",
@@ -74,10 +62,7 @@
     "role_title": "Account Executive, High Velocity",
     "location": "San Francisco Office",
     "evidence_text": "Granola is recruiting Account Executive, High Velocity in San Francisco Office.",
-    "entity": "Granola",
-    "validation_status": "validated",
-    "validation_reason": null,
-    "signal_score": 0.95
+    "entity": "Granola"
   },
   {
     "signal_id": "sig_6be8f8e78889",
@@ -90,10 +75,7 @@
     "role_title": "Account Executive, Enterprise",
     "location": "San Francisco Office",
     "evidence_text": "Granola is recruiting Account Executive, Enterprise in San Francisco Office.",
-    "entity": "Granola",
-    "validation_status": "validated",
-    "validation_reason": null,
-    "signal_score": 0.95
+    "entity": "Granola"
   },
   {
     "signal_id": "sig_79072b732217",
@@ -106,10 +88,7 @@
     "role_title": "Account Executive, Mid Market",
     "location": "San Francisco Office",
     "evidence_text": "Granola is recruiting Account Executive, Mid Market in San Francisco Office.",
-    "entity": "Granola",
-    "validation_status": "validated",
-    "validation_reason": null,
-    "signal_score": 0.95
+    "entity": "Granola"
   },
   {
     "signal_id": "sig_d34ab1120586",
@@ -120,9 +99,6 @@
     "observed_at": "2026-09-10T00:00:00+00:00",
     "published_at": "2026-03-25T00:00:00+00:00",
     "evidence_text": "Granola announced a $125M Series C at a $1.5B valuation, led by Index Ventures.",
-    "entity": "Granola",
-    "validation_status": "validated",
-    "validation_reason": null,
-    "signal_score": 0.76
+    "entity": "Granola"
   }
 ]

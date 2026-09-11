@@ -1,8 +1,12 @@
 {
   "company": "Granola",
-  "hypothesis": "Granola appears to be deliberately building a more mature, segmented GTM organisation across pipeline generation, revenue conversion, customer success, and commercial infrastructure.",
+  "hypothesis": "Granola shows a strong full-funnel GTM hiring buildout alongside a funding signal, suggesting active commercial expansion rather than isolated recruitment.",
   "hypothesis_confidence": 0.9,
-  "recommended_crm_action": "Prioritize this account for strategic outreach focused on GTM infrastructure, segmentation, routing, forecasting, and cross-functional revenue operations.",
+  "signal_families": [
+    "funding",
+    "gtm_hiring"
+  ],
+  "recommended_crm_action": "Prioritize this account for strategic outreach focused on GTM infrastructure, segmentation, routing, forecasting, and scalable commercial operations.",
   "supporting_signal_ids": [
     "sig_f076e552c96c",
     "sig_4d39ae397a95",
@@ -10,6 +14,7 @@
     "sig_d45fe477689b",
     "sig_5e38d29a6efe",
     "sig_6be8f8e78889",
-    "sig_79072b732217"
+    "sig_79072b732217",
+    "sig_d34ab1120586"
   ]
 }

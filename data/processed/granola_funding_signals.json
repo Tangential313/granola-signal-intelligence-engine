@@ -1,0 +1,13 @@
+[
+  {
+    "signal_id": "sig_d34ab1120586",
+    "company": "Granola",
+    "signal_type": "funding",
+    "source_url": "https://www.granola.ai/blog/series-c",
+    "source_type": "company_newsroom",
+    "observed_at": "2026-09-10T00:00:00+00:00",
+    "published_at": "2026-03-25T00:00:00+00:00",
+    "evidence_text": "Granola announced a $125M Series C at a $1.5B valuation, led by Index Ventures.",
+    "entity": "Granola"
+  }
+]

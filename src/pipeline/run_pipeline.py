@@ -4,6 +4,8 @@ import sys
 
 STEPS = [
     "src.normalization.normalize_jobs",
+    "src.normalization.normalize_funding",
+    "src.normalization.merge_signals",
     "src.pipeline.process_signals",
     "src.clustering.cluster_signals",
     "src.hypothesis.generate_hypothesis",

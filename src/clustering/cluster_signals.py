@@ -40,12 +40,28 @@ with INPUT_PATH.open() as file:
     signals = json.load(file)
 
 print(f"Loaded {len(signals)} validated signals")
+
+hiring_signals = [
+    signal
+    for signal in signals
+    if signal["signal_type"] == "gtm_hiring"
+]
+
 capabilities = [
     get_capability(signal)
-    for signal in signals
+    for signal in hiring_signals
 ]
 
 capability_counts = Counter(capabilities)
+
+signal_families = sorted({
+    signal["signal_type"]
+    for signal in signals
+})
+
+hiring_evidence_count = sum(capability_counts.values())
+total_evidence_count = len(signals)
+
 required_capabilities = {
     "pipeline_generation",
     "revenue_conversion",
@@ -61,15 +77,17 @@ else:
 capability_breadth = len(
     required_capabilities.intersection(capability_counts.keys())
 )
-evidence_count = sum(capability_counts.values())
+hiring_evidence_count = sum(capability_counts.values())
+total_evidence_count = len(signals)
 
-if capability_breadth == 4 and evidence_count >= 7:
+if capability_breadth == 4 and hiring_evidence_count >= 7:
     cluster_strength = "strong"
-elif capability_breadth >= 3 and evidence_count >= 4:
+elif capability_breadth >= 3 and hiring_evidence_count >= 4:
     cluster_strength = "moderate"
 else:
     cluster_strength = "weak"
 
+    
 supporting_signal_ids = [
     signal["signal_id"]
     for signal in signals
@@ -83,11 +101,13 @@ if len(companies) != 1:
 company = companies.pop()
 
 cluster = {
-  "company": company,
+    "company": company,
     "cluster_type": cluster_type,
     "cluster_strength": cluster_strength,
+    "signal_families": signal_families,
     "capability_counts": dict(capability_counts),
-    "evidence_count": evidence_count,
+    "hiring_evidence_count": hiring_evidence_count,
+    "total_evidence_count": total_evidence_count,
     "supporting_signal_ids": supporting_signal_ids,
 }
 

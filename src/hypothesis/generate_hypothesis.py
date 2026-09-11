@@ -21,31 +21,43 @@ OUTPUT_PATH = (
 with INPUT_PATH.open() as file:
     cluster = json.load(file)
 
-print(cluster)
 cluster_type = cluster["cluster_type"]
 cluster_strength = cluster["cluster_strength"]
+signal_families = cluster["signal_families"]
 
 if (
     cluster_type == "full_funnel_gtm_buildout"
     and cluster_strength == "strong"
+    and "funding" in signal_families
 ):
     hypothesis = (
-        "Granola appears to be deliberately building a more mature, "
-        "segmented GTM organisation across pipeline generation, "
-        "revenue conversion, customer success, and commercial infrastructure."
-    )
-else:
-    hypothesis = (
-        "Granola shows signs of GTM development, but the current signal cluster "
-        "is not strong enough to support a full-funnel buildout hypothesis."
+        f'{cluster["company"]} shows a strong full-funnel GTM hiring '
+        f'buildout alongside a funding signal, suggesting active '
+        f'commercial expansion rather than isolated recruitment.'
     )
 
-print(f"Hypothesis: {hypothesis}")
+elif (
+    cluster_type == "full_funnel_gtm_buildout"
+    and cluster_strength == "strong"
+):
+    hypothesis = (
+        f'{cluster["company"]} appears to be deliberately building a more '
+        f'mature, segmented GTM organisation across pipeline generation, '
+        f'revenue conversion, customer success, and commercial infrastructure.'
+    )
+
+else:
+    hypothesis = (
+        f'{cluster["company"]} shows signs of GTM development, but the '
+        f'available evidence is not yet strong enough to indicate a '
+        f'full commercial buildout.'
+    )
 
 hypothesis_record = {
     "company": cluster["company"],
     "cluster_type": cluster_type,
     "cluster_strength": cluster_strength,
+    "signal_families": signal_families,
     "hypothesis": hypothesis,
     "hypothesis_confidence": 0.9 if cluster_strength == "strong" else 0.6,
     "supporting_evidence": cluster["capability_counts"],
@@ -55,4 +67,5 @@ hypothesis_record = {
 with OUTPUT_PATH.open("w") as file:
     json.dump(hypothesis_record, file, indent=2)
 
+print(f"Hypothesis: {hypothesis}")
 print(f"Saved hypothesis to {OUTPUT_PATH}")

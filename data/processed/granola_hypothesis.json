@@ -2,7 +2,11 @@
   "company": "Granola",
   "cluster_type": "full_funnel_gtm_buildout",
   "cluster_strength": "strong",
-  "hypothesis": "Granola appears to be deliberately building a more mature, segmented GTM organisation across pipeline generation, revenue conversion, customer success, and commercial infrastructure.",
+  "signal_families": [
+    "funding",
+    "gtm_hiring"
+  ],
+  "hypothesis": "Granola shows a strong full-funnel GTM hiring buildout alongside a funding signal, suggesting active commercial expansion rather than isolated recruitment.",
   "hypothesis_confidence": 0.9,
   "supporting_evidence": {
     "commercial_infrastructure": 1,
@@ -17,6 +21,7 @@
     "sig_d45fe477689b",
     "sig_5e38d29a6efe",
     "sig_6be8f8e78889",
-    "sig_79072b732217"
+    "sig_79072b732217",
+    "sig_d34ab1120586"
   ]
 }
