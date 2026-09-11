@@ -11,6 +11,7 @@ INPUT_PATH = (
     / "processed"
     / "granola_validated_signals.json"
 )
+
 OUTPUT_PATH = (
     BASE_DIR
     / "data"
@@ -36,86 +37,128 @@ def get_capability(signal):
 
     return "other"
 
-with INPUT_PATH.open() as file:
-    signals = json.load(file)
 
-print(f"Loaded {len(signals)} validated signals")
+def get_capability_breadth(
+    capability_counts,
+    required_capabilities,
+):
+    return len(
+        required_capabilities.intersection(
+            capability_counts.keys()
+        )
+    )
 
-hiring_signals = [
-    signal
-    for signal in signals
-    if signal["signal_type"] == "gtm_hiring"
-]
 
-capabilities = [
-    get_capability(signal)
-    for signal in hiring_signals
-]
+def get_cluster_strength(
+    capability_breadth,
+    hiring_evidence_count,
+):
+    if capability_breadth == 4 and hiring_evidence_count >= 7:
+        return "strong"
 
-capability_counts = Counter(capabilities)
+    if capability_breadth >= 3 and hiring_evidence_count >= 4:
+        return "moderate"
 
-signal_families = sorted({
-    signal["signal_type"]
-    for signal in signals
-})
+    return "weak"
 
-hiring_evidence_count = sum(capability_counts.values())
-total_evidence_count = len(signals)
 
-required_capabilities = {
-    "pipeline_generation",
-    "revenue_conversion",
-    "customer_success",
-    "commercial_infrastructure",
-}
+def get_signal_families(signals):
+    return sorted({
+        signal["signal_type"]
+        for signal in signals
+    })
 
-if required_capabilities.issubset(capability_counts.keys()):
-    cluster_type = "full_funnel_gtm_buildout"
-else:
-    cluster_type = "partial_gtm_buildout"
 
-capability_breadth = len(
-    required_capabilities.intersection(capability_counts.keys())
-)
-hiring_evidence_count = sum(capability_counts.values())
-total_evidence_count = len(signals)
+def main():
+    with INPUT_PATH.open() as file:
+        signals = json.load(file)
 
-if capability_breadth == 4 and hiring_evidence_count >= 7:
-    cluster_strength = "strong"
-elif capability_breadth >= 3 and hiring_evidence_count >= 4:
-    cluster_strength = "moderate"
-else:
-    cluster_strength = "weak"
+    print(f"Loaded {len(signals)} validated signals")
 
-    
-supporting_signal_ids = [
-    signal["signal_id"]
-    for signal in signals
-]
+    hiring_signals = [
+        signal
+        for signal in signals
+        if signal["signal_type"] == "gtm_hiring"
+    ]
 
-companies = {signal["company"] for signal in signals}
+    capabilities = [
+        get_capability(signal)
+        for signal in hiring_signals
+    ]
 
-if len(companies) != 1:
-    raise ValueError("Expected signals from exactly one company")
+    capability_counts = Counter(capabilities)
 
-company = companies.pop()
+    signal_families = get_signal_families(signals)
 
-cluster = {
-    "company": company,
-    "cluster_type": cluster_type,
-    "cluster_strength": cluster_strength,
-    "signal_families": signal_families,
-    "capability_counts": dict(capability_counts),
-    "hiring_evidence_count": hiring_evidence_count,
-    "total_evidence_count": total_evidence_count,
-    "supporting_signal_ids": supporting_signal_ids,
-}
+    hiring_evidence_count = sum(
+        capability_counts.values()
+    )
 
-with OUTPUT_PATH.open("w") as file:
-    json.dump(cluster, file, indent=2)
+    total_evidence_count = len(signals)
 
-print(f"Cluster strength: {cluster_strength}")
-print(f"Cluster type: {cluster_type}") 
-print(f"Saved cluster to {OUTPUT_PATH}")
-print(capability_counts)
-print(capabilities)
+    required_capabilities = {
+        "pipeline_generation",
+        "revenue_conversion",
+        "customer_success",
+        "commercial_infrastructure",
+    }
+
+    if required_capabilities.issubset(
+        capability_counts.keys()
+    ):
+        cluster_type = "full_funnel_gtm_buildout"
+    else:
+        cluster_type = "partial_gtm_buildout"
+
+    capability_breadth = get_capability_breadth(
+        capability_counts,
+        required_capabilities,
+    )
+
+    cluster_strength = get_cluster_strength(
+        capability_breadth,
+        hiring_evidence_count,
+    )
+
+    supporting_signal_ids = [
+        signal["signal_id"]
+        for signal in signals
+    ]
+
+    companies = {
+        signal["company"]
+        for signal in signals
+    }
+
+    if len(companies) != 1:
+        raise ValueError(
+            "Expected signals from exactly one company"
+        )
+
+    company = companies.pop()
+
+    cluster = {
+        "company": company,
+        "cluster_type": cluster_type,
+        "cluster_strength": cluster_strength,
+        "signal_families": signal_families,
+        "capability_counts": dict(capability_counts),
+        "hiring_evidence_count": hiring_evidence_count,
+        "total_evidence_count": total_evidence_count,
+        "supporting_signal_ids": supporting_signal_ids,
+    }
+
+    with OUTPUT_PATH.open("w") as file:
+        json.dump(
+            cluster,
+            file,
+            indent=2,
+        )
+
+    print(f"Cluster strength: {cluster_strength}")
+    print(f"Cluster type: {cluster_type}")
+    print(f"Saved cluster to {OUTPUT_PATH}")
+
+
+if __name__ == "__main__":
+    main()

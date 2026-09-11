@@ -1,7 +1,11 @@
-
 import json
 from pathlib import Path
 import hashlib
+
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+INPUT_PATH = BASE_DIR / "data" / "raw" / "granola_jobs.json"
+OUTPUT_PATH = BASE_DIR / "data" / "processed" / "granola_signals.json"
 
 
 def is_gtm_role(job):
@@ -14,7 +18,11 @@ def is_gtm_role(job):
         "revenue operations",
     ]
 
-    return any(keyword in title for keyword in gtm_keywords)
+    return any(
+        keyword in title
+        for keyword in gtm_keywords
+    )
+
 
 def make_signal_id(job):
     identity = (
@@ -24,9 +32,12 @@ def make_signal_id(job):
         f'{job["url"]}'
     )
 
-    digest = hashlib.sha256(identity.encode()).hexdigest()[:12]
+    digest = hashlib.sha256(
+        identity.encode()
+    ).hexdigest()[:12]
 
     return f"sig_{digest}"
+
 
 def normalize_job(job):
     return {
@@ -47,26 +58,36 @@ def normalize_job(job):
     }
 
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-INPUT_PATH = BASE_DIR / "data" / "raw" / "granola_jobs.json"
+def main():
+    with INPUT_PATH.open() as file:
+        raw_jobs = json.load(file)
 
-with INPUT_PATH.open() as file:
-    raw_jobs = json.load(file)
+    normalized_jobs = [
+        normalize_job(job)
+        for job in raw_jobs
+        if is_gtm_role(job)
+    ]
 
-normalized_jobs = [
-    normalize_job(job)
-    for job in raw_jobs
-    if is_gtm_role(job)
-]
+    for job in normalized_jobs:
+        print(job["evidence_text"])
 
-for job in normalized_jobs:
-    print(job["evidence_text"])
+    OUTPUT_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
-OUTPUT_PATH = BASE_DIR / "data" / "processed" / "granola_signals.json"
+    with OUTPUT_PATH.open("w") as file:
+        json.dump(
+            normalized_jobs,
+            file,
+            indent=2,
+        )
 
-OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    print(
+        f"Normalized {len(normalized_jobs)} jobs"
+    )
+    print(f"Saved to {OUTPUT_PATH}")
 
-with OUTPUT_PATH.open("w") as file:
-    json.dump(normalized_jobs, file, indent=2)
-print(f"Normalized {len(normalized_jobs)} jobs")
-print(f"Saved to {OUTPUT_PATH}")
+
+if __name__ == "__main__":
+    main()
