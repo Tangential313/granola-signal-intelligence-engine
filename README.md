@@ -42,6 +42,26 @@ python -m src.pipeline.run_pipeline
 
 The runner executes each stage sequentially and stops if a stage fails, preventing downstream stages from silently operating on stale or invalid output.
 
+## Setup
+
+Clone the repository and install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the full pipeline from the project root:
+
+```bash
+python -m src.pipeline.run_pipeline
+```
+
+Run the test suite:
+
+```bash
+python -m pytest -q
+```
+
 ## What is implemented
 
 The current version includes:
@@ -301,6 +321,7 @@ python -m pytest -q
 ```text
 granola-signal-intelligence-engine/
 ├── README.md
+├── requirements.txt
 ├── data/
 │   ├── raw/
 │   │   ├── granola_jobs.json
@@ -376,7 +397,7 @@ These are future extensions rather than currently implemented capabilities.
 
 ## Project status
 
-### Current milestone: deterministic cross-signal engine
+### v1: complete
 
 Completed:
 
@@ -392,17 +413,16 @@ Completed:
 - evidence lineage
 - automated business-rule tests
 - one-command pipeline runner
+- canonical signal schema documentation
+- dependency and setup documentation
 
-Next:
+Future work:
 
-- align the canonical signal schema documentation with the implementation
-- add dependency/setup documentation
 - expand edge-case testing
-- add a third independent signal family
+- add additional independent signal families
 - introduce LLM enrichment downstream of validated evidence
 - design the outcome-measurement layer
 
 ---
 
-Built by **Aanu Oduyemi-Rose
-** as a GTM Engineering / Revenue Operations portfolio project.
+Built by **Aanu Oduyemi-Rose** as a GTM Engineering / Revenue Operations portfolio project.
