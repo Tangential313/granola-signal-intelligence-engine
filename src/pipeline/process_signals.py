@@ -2,21 +2,6 @@ import json
 from pathlib import Path
 
 from src.validation.validate_signal import validate_signal, get_signal_score
-BASE_DIR = Path(__file__).resolve().parents[2]
-
-INPUT_PATH = BASE_DIR / "data" / "processed" / "granola_signals.json"
-OUTPUT_PATH = BASE_DIR / "data" / "processed" / "granola_validated_signals.json"
-
-
-with INPUT_PATH.open() as file:
-    signals = json.load(file)
-
-
-import json
-from pathlib import Path
-
-from src.validation.validate_signal import validate_signal, get_signal_score
-
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 

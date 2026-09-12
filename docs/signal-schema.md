@@ -1,97 +1,123 @@
-# Signal Data Contract
+# Signal Schema
 
-This document defines the canonical shape of a signal record used by the Granola Signal Intelligence Engine.
+The Signal Intelligence Engine uses a canonical signal schema to separate raw source records from downstream GTM interpretation.
 
-The purpose of the contract is simple: every observed signal should enter the system in a consistent, traceable format before enrichment, scoring, or hypothesis generation occurs.
+The goal is to preserve three things:
 
-## Core principle
+1. **Evidence integrity**  
+   What was actually observed from the source?
 
-The pipeline separates **observed evidence** from **derived logic** and **generated interpretation**.
+2. **Consistent downstream processing**  
+   Can different signal types pass through the same validation and scoring layer?
 
-A signal record should therefore answer three questions:
-
-1. What did we observe?
-2. Where did the observation come from?
-3. Has the record passed validation strongly enough to be used downstream?
+3. **Traceability**  
+   Can a hypothesis or CRM action be traced back to the evidence that produced it?
 
 ## Canonical signal record
 
+A normalized signal is represented as a JSON object.
+
+Example:
+
 ```json
 {
+  "signal_id": "sig_f076e552c96c",
   "company": "Granola",
   "signal_type": "gtm_hiring",
-  "source_url": "https://example.com/source",
+  "source_url": "https://www.granola.ai/jobs/revenue-operations-lead",
   "source_type": "company_careers",
-  "observed_at": "2026-08-31T00:00:00Z",
-  "published_at": "2026-08-29T00:00:00Z",
-  "evidence_text": "Synthetic example evidence describing an open GTM role.",
+  "observed_at": "2026-09-10T00:00:00+00:00",
+  "published_at": null,
+  "evidence_text": "Granola is recruiting Revenue Operations Lead - US in San Francisco Office.",
   "entity": "Granola",
-  "freshness_days": 2,
-  "source_confidence": 0.95,
-  "validation_status": "validated",
-  "notes": "Synthetic example only. Not a real Granola signal."
+  "role_title": "Revenue Operations Lead - US",
+  "location": "San Francisco Office"
 }
 ```
 
-> **Important:** The example above is synthetic and exists only to demonstrate structure. Real signal records must contain verifiable public evidence.
+## Core fields
 
-## Field definitions
+These fields form the shared canonical layer.
 
-| Field | Type | Required | Description |
-|---|---|---:|---|
-| `company` | string | yes | Normalised company name used throughout the pipeline. |
-| `signal_type` | enum/string | yes | Category assigned to the observed event, such as `funding`, `gtm_hiring`, or `leadership_change`. |
-| `source_url` | string | yes | Direct URL to the evidence source. |
-| `source_type` | enum/string | yes | Source category, such as `company_careers`, `company_newsroom`, `news`, or `regulatory_filing`. |
-| `observed_at` | ISO 8601 datetime | yes | Timestamp when the engine captured or reviewed the signal. |
-| `published_at` | ISO 8601 datetime/null | no | Publication or event date where known. |
-| `evidence_text` | string | yes | Concise factual extract or paraphrase describing the observed event. |
-| `entity` | string | yes | Entity to which the signal applies. Usually the company, but may later support people, products, or business units. |
-| `freshness_days` | integer | derived | Number of days between `published_at` and `observed_at`. |
-| `source_confidence` | float 0.0–1.0 | derived/assigned | Confidence in the source as evidence for the claimed event. |
-| `validation_status` | enum | yes | Current validation outcome: `pending`, `validated`, `needs_review`, or `rejected`. |
-| `notes` | string/null | no | Analyst or system notes, ambiguity flags, or context that should not be stored inside the factual evidence field. |
+| Field | Type | Description |
+|---|---|---|
+| `signal_id` | string | Deterministic identifier for the normalized evidence record |
+| `company` | string | Company associated with the signal |
+| `signal_type` | string | Category of observed event |
+| `source_url` | string | Public source URL supporting the record |
+| `source_type` | string | Type of source used |
+| `observed_at` | ISO 8601 timestamp | When the engine observed the evidence |
+| `published_at` | ISO 8601 timestamp or `null` | When the underlying event or source was published, if known |
+| `evidence_text` | string | Concise factual description of the observed evidence |
+| `entity` | string | Entity named by the source and used for entity matching |
 
-## Initial signal types
+## Signal IDs
 
-Version 1 will focus on three signal categories:
+Each canonical signal receives a deterministic `signal_id`.
 
-### `funding`
+For hiring records, the current identity is derived from:
 
-Evidence that the company has raised capital or announced a financing event.
+```text
+company
++ role title
++ location
++ source URL
+```
 
-Potential sources:
+The resulting string is hashed and shortened into a value such as:
 
-- company newsroom or founder announcement
-- investor announcement
-- reputable business or technology publication
-- regulatory filing where relevant
+```text
+sig_f076e552c96c
+```
 
-### `gtm_hiring`
+This ensures that two roles sharing the same source URL can still remain distinct if other identifying fields differ.
 
-Evidence that the company is recruiting roles associated with commercial growth, including sales, marketing, partnerships, revenue operations, customer success, or GTM leadership.
+For example:
 
-Potential sources:
+```text
+Sales Development Representative
+London
+```
 
-- company careers page
-- applicant tracking system
-- verified company LinkedIn jobs page
+and:
 
-### `leadership_change`
+```text
+Sales Development Representative
+San Francisco
+```
 
-Evidence of a new senior leader or material leadership change relevant to commercial strategy, operations, product, or expansion.
+may share the same careers-page URL while remaining separate signal records.
 
-Potential sources:
+Signal IDs are deterministic within the current identity rules, but they should not be treated as permanent external entity IDs. If identifying source fields change, the resulting signal ID may also change.
 
-- company announcement
-- executive profile
-- reputable publication
+## Current signal types
 
-Additional categories may be introduced only after the first end-to-end pipeline is working.
+The implemented engine currently supports:
+
+```text
+gtm_hiring
+funding
+```
+
+The validation layer also reserves support for:
+
+```text
+leadership_change
+```
+
+Future signal families may include:
+
+```text
+geographic_expansion
+product_expansion
+technology_change
+```
+
+These future types are not yet implemented collectors or normalizers.
 
 ## Source types
 
-Initial accepted values:
+Current allowed source types include:
 
 ```text
 company_careers
@@ -104,99 +130,65 @@ professional_profile
 other
 ```
 
-A source type describes **where the evidence came from**, not what the signal means.
+The source type contributes to source-confidence scoring.
 
-## Validation statuses
-
-### `pending`
-
-The record has been captured but validation has not been completed.
-
-### `validated`
-
-The evidence supports the signal, entity resolution is correct, and the record is suitable for downstream scoring.
-
-### `needs_review`
-
-The signal is plausible but one or more elements are ambiguous, incomplete, or conflicting.
-
-### `rejected`
-
-The evidence is stale, duplicated, misattributed, unsupported, or otherwise unsuitable for downstream use.
-
-## Validation rules
-
-A record should not receive `validated` status unless the following checks pass.
-
-### 1. Source traceability
-
-- `source_url` must be present and reachable at time of capture.
-- The source must support the factual claim represented by `evidence_text`.
-- Generated text is never accepted as the original evidence source.
-
-### 2. Entity match
-
-- The signal must clearly refer to the intended company or entity.
-- Similar company names, subsidiaries, and acquired brands should be checked before validation.
-
-### 3. Timestamp and freshness
-
-- `observed_at` is always recorded.
-- `published_at` should be captured where available.
-- `freshness_days` must be calculated deterministically, not generated by an LLM.
-
-### 4. Duplicate detection
-
-Potential duplicates should be checked using a combination of:
-
-- company
-- signal type
-- source URL
-- event or publication date
-- materially equivalent evidence
-
-Multiple independent sources supporting the same event may be retained as corroborating evidence, but they should not be treated as multiple separate commercial events.
-
-### 5. Evidence vs interpretation
-
-`evidence_text` contains what is observed.
-
-It must not contain speculative conclusions such as:
+Examples:
 
 ```text
-Granola is definitely preparing to enter enterprise sales.
+company_careers       → high-confidence first-party hiring evidence
+company_newsroom      → high-confidence first-party company evidence
+regulatory_filing     → high-confidence formal disclosure
+news                  → supporting third-party evidence
+professional_profile  → supporting individual or leadership evidence
 ```
 
-A factual record might instead state:
+## Signal-specific fields
 
-```text
-Granola has advertised three enterprise account executive roles.
+Not every signal family should be forced into the same shape.
+
+The canonical schema therefore contains a shared core plus signal-specific fields.
+
+### GTM hiring
+
+Hiring signals currently include:
+
+```json
+{
+  "role_title": "Account Executive, Enterprise",
+  "location": "San Francisco Office"
+}
 ```
 
-The first is a hypothesis. The second is observable evidence.
+These structured fields are intentionally retained rather than forcing downstream logic to parse natural-language `evidence_text`.
 
-### 6. Confidence assignment
+The clustering layer uses `role_title` to map hiring evidence into GTM capabilities.
 
-`source_confidence` represents confidence in the source as evidence for the event, not confidence in a later GTM hypothesis.
+### Funding
 
-Initial guidance:
+Funding records currently rely on the shared canonical fields:
 
-| Confidence | Interpretation |
-|---:|---|
-| 0.90–1.00 | Primary or highly authoritative source |
-| 0.75–0.89 | Strong secondary source |
-| 0.50–0.74 | Useful but requires corroboration |
-| below 0.50 | Insufficient for automatic downstream use |
+```json
+{
+  "signal_type": "funding",
+  "source_type": "company_newsroom",
+  "published_at": "2026-03-25T00:00:00+00:00",
+  "evidence_text": "Granola announced a $125M Series C at a $1.5B valuation, led by Index Ventures."
+}
+```
 
-These thresholds are provisional and may change after testing.
+Funding-specific structured metadata such as round size, round type, valuation, or lead investor may be added later.
 
-## Observed vs derived vs generated fields
+The current implementation deliberately avoids inventing fields until downstream logic needs them.
 
-The project intentionally distinguishes data lineage.
+## Observed, derived, and generated data
 
-### Observed
+The engine separates data into three conceptual layers.
 
-Directly captured from evidence:
+### 1. Observed fields
+
+Observed fields describe evidence captured from the source.
+
+Examples:
 
 ```text
 company
@@ -207,37 +199,103 @@ observed_at
 published_at
 evidence_text
 entity
+role_title
+location
 ```
 
-### Derived
+These fields should remain factual and source-grounded.
 
-Calculated through deterministic logic:
+For example:
 
 ```text
-freshness_days
+Granola announced a $125M Series C.
+```
+
+is an observed fact.
+
+This would not be appropriate in the observed layer:
+
+```text
+Granola raised funding in order to accelerate GTM expansion.
+```
+
+unless the source explicitly stated that causal relationship.
+
+### 2. Derived fields
+
+Derived fields are produced by deterministic engine logic.
+
+Examples include:
+
+```text
 validation_status
-source_confidence
-```
-
-### Generated later
-
-Produced after validated records are available:
-
-```text
+validation_reason
 signal_score
-account_priority_score
-account_hypothesis
-recommended_crm_action
-hypothesis_confidence
+cluster_type
+cluster_strength
+capability_counts
+hiring_evidence_count
+total_evidence_count
+signal_families
+supporting_signal_ids
 ```
 
-Generated fields do not overwrite the evidence layer.
+Freshness, recency weighting, source confidence, and GTM relevance are currently calculated or looked up during scoring but are not persisted as separate fields in the validated signal record.
 
-## Minimum viable record
+These fields are reproducible from the underlying evidence and business rules.
 
-A signal cannot enter downstream scoring without:
+Example:
+
+```json
+{
+  "validation_status": "validated",
+  "signal_score": 0.76
+}
+```
+
+### 3. Generated or interpreted fields
+
+
+These fields represent account-level commercial interpretation.
+
+Examples include:
 
 ```text
+hypothesis
+hypothesis_confidence
+recommended_crm_action
+```
+
+The current implementation produces these using deterministic rules.
+
+A future LLM layer may generate contextual explanations or messaging downstream of validated evidence, but it will not replace the observed source-of-truth layer.
+
+## Validation status
+
+The schema supports the following validation states:
+
+```text
+pending
+validated
+needs_review
+rejected
+```
+
+The current automated pipeline primarily produces:
+
+```text
+validated
+rejected
+```
+
+A signal should not participate in downstream scoring and clustering unless it passes validation.
+
+## Minimum viable canonical signal
+
+Before validation, a canonical signal should contain, at minimum:
+
+```text
+signal_id
 company
 signal_type
 source_url
@@ -245,23 +303,148 @@ source_type
 observed_at
 evidence_text
 entity
-validation_status = validated
 ```
 
-If a required field cannot be established, the record remains `needs_review` or is rejected.
+`published_at` may be `null` when the source does not provide a publication date.
 
-## Why this matters
+Additional fields depend on the signal family.
 
-Signal intelligence is only useful if the system can explain **why it believes something happened**.
+For GTM hiring, downstream capability classification also requires:
 
-This data contract creates that audit trail before scoring or LLM interpretation begins, making it possible to inspect the evidence, challenge assumptions, debug incorrect outputs, and measure false positives later in the pipeline.
+```text
+role_title
+```
 
-## Next implementation step
+After processing, the canonical record also receives:
 
-Create the first Granola evidence dataset using this contract, beginning with:
+```text
+validation_status
+validation_reason
+signal_score
+```
 
-1. funding
-2. GTM hiring
-3. leadership change
+`signal_score` is only added when the signal validates successfully.
 
-Those records will become the input for the project's first validation and scoring logic.
+## Account-level artifacts
+
+Canonical signals are not duplicated wholesale into every downstream output.
+
+Instead, account-level artifacts maintain lineage using signal IDs.
+
+### Cluster
+
+Example:
+
+```json
+{
+  "company": "Granola",
+  "cluster_type": "full_funnel_gtm_buildout",
+  "cluster_strength": "strong",
+  "signal_families": [
+    "funding",
+    "gtm_hiring"
+  ],
+  "hiring_evidence_count": 7,
+  "total_evidence_count": 8,
+  "supporting_signal_ids": [
+    "sig_f076e552c96c",
+    "sig_d34ab1120586"
+  ]
+}
+```
+
+### Hypothesis
+
+Example:
+
+```json
+{
+  "company": "Granola",
+  "hypothesis": "Granola shows a strong full-funnel GTM hiring buildout alongside a funding signal, suggesting active commercial expansion rather than isolated recruitment.",
+  "supporting_signal_ids": [
+    "sig_f076e552c96c",
+    "sig_d34ab1120586"
+  ]
+}
+```
+
+### CRM action
+
+Example:
+
+```json
+{
+  "company": "Granola",
+  "recommended_crm_action": "Prioritize this account for strategic outreach focused on GTM infrastructure, segmentation, routing, forecasting, and scalable commercial operations.",
+  "supporting_signal_ids": [
+    "sig_f076e552c96c",
+    "sig_d34ab1120586"
+  ]
+}
+```
+
+The intended lineage is:
+
+```text
+source URL
+    ↓
+canonical signal
+    ↓
+validated signal
+    ↓
+cluster
+    ↓
+hypothesis
+    ↓
+CRM action
+```
+
+## Evidence records vs signal families
+
+The schema distinguishes between:
+
+```text
+evidence records
+```
+
+and:
+
+```text
+independent signal families
+```
+
+For the current Granola example:
+
+```text
+7 hiring records
+1 funding record
+```
+
+produces:
+
+```text
+8 total evidence records
+2 signal families
+```
+
+This distinction prevents repeated evidence from one family from being mistaken for independent corroboration.
+
+## Design principle
+
+The schema is deliberately conservative.
+
+The engine should preserve factual evidence first and add interpretation later.
+
+The working rule is:
+
+```text
+observe → normalize → validate → derive → interpret → act
+```
+
+instead of:
+
+```text
+scrape → guess
+```
+
+That separation is the foundation for traceable, testable GTM signal intelligence.
